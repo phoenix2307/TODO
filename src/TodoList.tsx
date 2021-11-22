@@ -1,14 +1,30 @@
-import React from 'react';
+import React, {ChangeEvent, KeyboardEvent, useState} from 'react';
 import {FilterValuesType, TaskType} from "./App";
 
 type PropsType = {
     title: string
     tasks: Array<TaskType>
-    removeTask: (taskId: number) => void
+    removeTask: (taskId: string) => void
     changeFilter: (filter: FilterValuesType) => void
+    addTasks: (title: string) => void
 }
 
 function TodoList(props: PropsType) {
+    const [title, setTitle] = useState<string>('')
+    const addTask = () => {
+        props.addTasks(title)
+        setTitle('')
+    }
+    const changeTitle = (e: ChangeEvent<HTMLInputElement>) => setTitle(e.currentTarget.value)
+    const keyPress = (e: KeyboardEvent<HTMLInputElement>) => {
+        if (e.key === 'Enter') {
+            addTask()
+        }
+    }
+    const clickAll = () => props.changeFilter('all')
+    const clickActive = () => props.changeFilter('active')
+    const clickCompleted = () => props.changeFilter('completed')
+
     const tasksJSX = props.tasks.map(task => {
         return (
             <li key={task.id}>
@@ -22,16 +38,20 @@ function TodoList(props: PropsType) {
         <div>
             <h3>{props.title}</h3>
             <div>
-                <input/>
-                <button>+</button>
+                <input
+                    value={title}
+                    onChange={changeTitle}
+                    onKeyPress={keyPress}
+                />
+                <button onClick={addTask}>+</button>
             </div>
             <ul>
                 {tasksJSX}
             </ul>
             <div>
-                <button onClick={()=> props.changeFilter('all')}>All</button>
-                <button onClick={()=> props.changeFilter('active')}>Active</button>
-                <button onClick={()=> props.changeFilter('completed')}>Completed</button>
+                <button onClick={clickAll}>All</button>
+                <button onClick={clickActive}>Active</button>
+                <button onClick={clickCompleted}>Completed</button>
             </div>
         </div>
     )
