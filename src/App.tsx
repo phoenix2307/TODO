@@ -32,15 +32,9 @@ function App() {
     const changeFilter = (filter: FilterValuesType) => {
         setFilter(filter)
     }
-
-
-    // const tasks = result[0] // текущее состояние
-    // const setTasks = result[1] // функция, которая устанавливает новое значение state
-
     const removeTask = (taskId: string) => {
         setTasks(tasks.filter(task => task.id !== taskId))
     }
-
     const addTask = (newTaskTitle: string) => {
         // const newTaskTitle: string = 'New Task'
         const newTask: TaskType = {
@@ -49,6 +43,11 @@ function App() {
             isDone: false
         }
         setTasks([newTask, ...tasks])
+    }
+
+    const changeTaskStatus = (taskID: string, isDone: boolean) => {
+        const updatedTasks = tasks.map(t => t.id === taskID ? {...t, isDone: isDone} : t)
+            setTasks(updatedTasks)
     }
 
     let tasksForRender = tasks
@@ -65,9 +64,11 @@ function App() {
             <TodoList
                 title={todoListTitle}
                 tasks={tasksForRender}
+                filter={filter}
                 addTasks={addTask}
                 removeTask={removeTask}
                 changeFilter={changeFilter}
+                changeTaskStatus={changeTaskStatus}
             />
         </div>
     );
